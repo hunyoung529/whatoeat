@@ -1,18 +1,30 @@
-import { Image, StyleSheet, Platform, View } from "react-native";
-
-import { HelloWave } from "@/components/HelloWave";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+import { Image, StyleSheet, View } from "react-native";
 import { useState } from "react";
-import { Button, Input } from "@rneui/themed";
+import { Button, Input, Text } from "@rneui/themed";
+import { Link } from "expo-router";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const handleLogin = () => {
+    console.log("로그인 눌렀따리");
+  };
+
+  const handleSignUpGoogle = () => {
+    console.log("구글 로그인 눌렀따리");
+  };
+
+  const handleSignUpKakao = () => {
+    console.log("카카오 로그인 눌렀따리");
+  };
+
   return (
     <View style={styles.container}>
+      <Image
+        source={require("@/assets/images/react-logo.png")}
+        style={styles.logo}
+      />
       <Input
         placeholder="이메일을 입력해주세요."
         leftIcon={{ type: "feather", name: "mail" }}
@@ -23,30 +35,34 @@ export default function LoginScreen() {
       <Input
         placeholder="비밀번호를 입력해주세요."
         leftIcon={{ type: "feather", name: "lock" }}
-        secureTextEntry // 비밀번호 가리기
+        secureTextEntry
         value={password}
         onChangeText={setPassword}
         inputContainerStyle={styles.inputContainer}
         inputStyle={styles.input}
       />
+
+      <Button
+        title="로그인"
+        buttonStyle={styles.loginButton}
+        onPress={handleLogin}
+      />
+
       <View style={styles.socialButtonsContainer}>
+        <Link href="/signup" style={styles.socialLoginButton}>
+          <Text>회원가입</Text>
+        </Link>
         <Button
-          title="회원가입"
-          type="clear"
-          titleStyle={styles.socialButtonText}
-          containerStyle={styles.socialButtonContainer}
+          title="Google"
+          type="outline"
+          buttonStyle={styles.socialLoginButton}
+          onPress={handleSignUpGoogle}
         />
         <Button
-          title="소셜 로그인"
-          type="clear"
-          titleStyle={styles.socialButtonText}
-          containerStyle={styles.socialButtonContainer}
-        />
-        <Button
-          title="소셜 로그인"
-          type="clear"
-          titleStyle={styles.socialButtonText}
-          containerStyle={styles.socialButtonContainer}
+          title="Kakao"
+          type="outline"
+          buttonStyle={styles.socialLoginButton}
+          onPress={handleSignUpKakao}
         />
       </View>
     </View>
@@ -80,7 +96,7 @@ const styles = StyleSheet.create({
   loginButton: {
     borderRadius: 8,
     marginBottom: 20,
-    backgroundColor: "#4CAF50", // 초록색
+    backgroundColor: "#4CAF50",
     paddingVertical: 12,
   },
   socialButtonsContainer: {
@@ -89,17 +105,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
-  socialButtonContainer: {
-    borderRadius: 50,
+  socialLoginButton: {
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: "gray",
-    padding: 15,
-    width: 80,
-    height: 80,
-  },
-  socialButtonText: {
+    borderColor: "black",
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    minWidth: 80,
+    alignItems: "center",
+    justifyContent: "center",
     color: "gray",
-    fontSize: 12,
-    textAlign: "center",
   },
 });
