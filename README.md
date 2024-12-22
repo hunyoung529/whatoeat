@@ -1,50 +1,40 @@
-# Welcome to your Expo app 👋
+제철 식재료 기반 레시피 추천 앱 개발
+이 문서는 제철 식재료 검색 및 레시피 추천 기능을 제공하는 모바일 앱 개발에 대한 기획, 구조 설계 및 개발 현황을 정리합니다.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+1. 기획 및 구조 설계
+   1.1 앱 주요 기능 정의
+   제철 식재료 검색 기능: 사용자가 특정 시기에 가장 신선한 식재료를 쉽게 찾을 수 있도록 지원합니다.
+   해당 재료 기반 추천 레시피 리스트업: 검색된 식재료를 활용한 다양한 레시피를 제공합니다.
+   유저 레시피 작성 및 등록: 사용자가 직접 레시피를 작성하고 공유할 수 있는 기능을 제공합니다.
+   레시피 추천 (좋아요) 기능: 다른 사용자의 레시피에 대한 호응을 표현할 수 있는 기능을 제공합니다.
+   댓글 및 리뷰 기능: 레시피에 대한 의견을 공유하고 소통할 수 있는 기능을 제공합니다.
+   1.2 메인 화면 흐름 설계
+   시작 화면: 앱 실행 시 처음 나타나는 화면입니다.
+   홈 화면: 주요 기능들을 탐색할 수 있는 메인 화면입니다.
+   재료 선택 시 레시피 목록 화면: 선택한 재료에 따른 레시피 목록을 보여줍니다.
+   레시피 상세 화면: 레시피 정보, 추천 버튼, 댓글 보기/쓰기 기능을 제공합니다.
+   레시피 작성 화면: 텍스트 및 이미지 첨부를 통해 레시피를 작성할 수 있습니다.
+   1.3 사용자 플로우 정의
+   비로그인 시: 레시피 열람은 가능하지만, 댓글, 추천, 레시피 작성 등의 일부 기능은 제한됩니다.
+   로그인/회원가입: 소셜 로그인 또는 이메일/비밀번호 로그인을 지원합니다.
+   1.4 API 사용
+   제철 식재료 정보: 농촌진흥청, 농림축산식품 API 활용
+   레시피 정보: 식약처 API 및 만개의 레시피 크롤링 활용
+2. 백엔드
+   기술 스택: Node.js (Express)
+   데이터베이스: MongoDB
+   인증 및 보안: Passport, JWT, Bcrypt를 이용한 사용자 인증 및 비밀번호 암호화
+   예정 기능: Cloudinary를 활용한 이미지 업로드 처리
+3. 프론트엔드
+   사용 라이브러리: React Native Elements
+   구현 사항:
+   로그인 및 회원가입 페이지 제작
+   회원가입 기능 테스트 완료
+   식자재 API 연동 및 데이터 불러오기 확인
+4. 개발 현황 및 향후 계획
+   4.1 현재 진행 상황
+   백엔드: Node.js 및 Express 기반 서버 구축, MongoDB 연결, 사용자 인증 및 비밀번호 암호화 구현 완료
+   프론트엔드: 로그인/회원가입 페이지 제작, 회원가입 기능 테스트 완료, 식자재 API 연동 완료
+   4.2 향후 계획
+   백엔드: 이미지 업로드 기능 구현, 레시피 작성 및 관련 기능 구현
+   프론트엔드: 사용자 인터페이스 개선, 레시피 작성, 추천, 댓글 기능 등 추가 기능 구현
