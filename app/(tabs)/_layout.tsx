@@ -27,15 +27,15 @@ export default function TabLayout() {
         }),
       }}
     >
-      {/* <Tabs.Screen
-        name="index"
+      <Tabs.Screen
+        name="home"
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={30} name="house.fill" color={color} />
           ),
         }}
-      /> */}
+      />
       <Tabs.Screen
         name="explore"
         options={{
@@ -46,8 +46,7 @@ export default function TabLayout() {
         }}
       />
 
-      
-<Tabs.Screen
+      <Tabs.Screen
         name="like"
         options={{
           title: "like",
@@ -57,7 +56,6 @@ export default function TabLayout() {
         }}
       />
 
-      
       <Tabs.Screen
         name="my"
         options={{
@@ -67,7 +65,6 @@ export default function TabLayout() {
           ),
         }}
       />
-
     </Tabs>
   );
 }
