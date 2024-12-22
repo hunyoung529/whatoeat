@@ -43,7 +43,8 @@
       },
       "eas": {
         "projectId": "e4791c57-a607-4efa-9423-937f0419da9e"
-      }
+      },
+      "VEGETABLE_API_KEY": "a39ed768df2eaa3ac89b24bf629c57329ab3788f944b4a92894fbb35941d6f45"
     }
   }
 }

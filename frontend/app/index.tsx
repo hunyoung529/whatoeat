@@ -47,7 +47,9 @@ export default function LoginScreen() {
         buttonStyle={styles.loginButton}
         onPress={handleLogin}
       />
-
+      <Link href="/(tabs)/home">
+        <Text>dd</Text>
+      </Link>
       <View style={styles.socialButtonsContainer}>
         <Link href="/signup" style={styles.socialLoginButton}>
           <Text>회원가입</Text>
