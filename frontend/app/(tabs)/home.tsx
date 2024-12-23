@@ -3,11 +3,29 @@ import { useEffect, useState } from "react";
 import { StyleSheet, View, TouchableOpacity, FlatList,Dimensions  } from "react-native";
 import Constants from "expo-constants";
 
+interface RowData {
+  COOK_MTH: string;
+  PRDLST_NM: string;
+  [key: string]: any;
+}
+
+interface GridData {
+  endRow: number;
+  result: { code: string; message: string };
+  row: RowData[];
+  startRow: number;
+  totalCnt: number;
+}
+
+interface ApiResponse {
+  Grid_20171128000000000572_1: GridData;
+}
+
 export default function Home() {
   const vegeApiKey = Constants.expoConfig?.extra?.VEGETABLE_API_KEY;
   const [startIndex, setStartIndex] = useState(1);
   const [endIndex, setEndIndex] = useState(2);
-  const [vegetableData, setVegetableData] = useState(null);
+  const [vegetableData, setVegetableData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const seasons = ["봄", "여름", "가을", "겨울", "전체"];
@@ -71,6 +89,7 @@ export default function Home() {
         }
 
         const data = await response.json();
+        console.log("Fetched data:", data); // 데이터 구조 확인
         setVegetableData(data);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -83,7 +102,7 @@ export default function Home() {
     fetchVegetableData();
   }, [startIndex, endIndex, vegeApiKey]);
 
-  console.log(vegetableData?.Grid_20171128000000000572_1.row[0]);
+  console.log(vegetableData?.Grid_20171128000000000572_1);
 
   return (
     <View style={styles.container}>
