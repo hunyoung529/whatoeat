@@ -1,76 +1,70 @@
 import { useState } from "react";
-import { View, Text, TextInput, Alert, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { Button } from "@rneui/themed";
-import { signup } from "@/api"; // API 호출 함수 import
+import { Button, Input } from "@rneui/themed";
 
 interface SignUpFormData {
-  email: string;
+  username: string;
+  nickname: string;
   password: string;
   confirmPassword: string;
-  nickname: string;
 }
 
 export default function SignUpPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<SignUpFormData>({
-    email: "",
+    username: "",
+    nickname: "",
     password: "",
     confirmPassword: "",
-    nickname: "", // 닉네임 초기값 추가
   });
+  const [passwordError, setPasswordError] = useState<string>("");
 
   const handleChange = (name: keyof SignUpFormData, value: string) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSignup = async () => {
+  const handleSignup = () => {
     if (formData.password !== formData.confirmPassword) {
-      Alert.alert("회원가입 실패", "비밀번호가 일치하지 않습니다.");
+      setPasswordError("비밀번호가 일치하지 않습니다.");
+      console.log("비밀번호 다름");
+
       return;
     }
-
-    try {
-      const { confirmPassword, ...signupData } = formData;
-      const response = await signup(signupData);
-
-      Alert.alert(
-        "회원가입 성공",
-        response.message || "회원가입이 완료되었습니다."
-      );
-      router.replace("/(tabs)/home");
-    } catch (error: any) {
-      Alert.alert(
-        "회원가입 실패",
-        error.message || "회원가입 중 오류가 발생했습니다."
-      );
-    }
+    setPasswordError(""); // 에러 메시지 초기화
+    console.log("메시지 초기화");
   };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>회원가입</Text>
-      <TextInput
+      <Input
+        inputContainerStyle={styles.inputContainer}
         style={styles.input}
         placeholder="이메일"
-        value={formData.email}
-        onChangeText={(text) => handleChange("email", text)}
-        keyboardType="email-address" // 이메일 키보드 타입 설정
-        autoCapitalize="none"
+        inputMode="email"
+        value={formData.username}
+        onChangeText={(text) => handleChange("username", text)}
       />
-      <TextInput
+      <Input
+        inputContainerStyle={styles.inputContainer}
         style={styles.input}
         placeholder="닉네임"
         value={formData.nickname}
         onChangeText={(text) => handleChange("nickname", text)}
       />
-      <TextInput
+
+      <Input
+        inputContainerStyle={styles.inputContainer}
         style={styles.input}
         placeholder="비밀번호"
         secureTextEntry
         value={formData.password}
         onChangeText={(text) => handleChange("password", text)}
+        errorMessage={passwordError}
       />
-      <TextInput
+      <Input
+        inputContainerStyle={styles.inputContainer}
         style={styles.input}
         placeholder="비밀번호 확인"
         secureTextEntry
@@ -105,11 +99,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#4CAF50",
     paddingVertical: 12,
   },
-  input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
+  inputContainer: {
+    backgroundColor: "#f2f2f2",
+    borderRadius: 8,
+    borderBottomWidth: 0,
     marginBottom: 10,
     paddingHorizontal: 10,
+  },
+  input: {
+    fontSize: 16,
   },
 });
