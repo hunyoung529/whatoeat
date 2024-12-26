@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { View, Text, TextInput, Alert, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { Button } from "@rneui/themed";
+import { Button, Input } from "@rneui/themed";
 
 interface SignUpFormData {
   username: string;
+  nickname: string;
   password: string;
   confirmPassword: string;
 }
@@ -13,9 +14,11 @@ export default function SignUpPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<SignUpFormData>({
     username: "",
+    nickname: "",
     password: "",
     confirmPassword: "",
   });
+  const [passwordError, setPasswordError] = useState<string>("");
 
   const handleChange = (name: keyof SignUpFormData, value: string) => {
     setFormData({ ...formData, [name]: value });
@@ -23,32 +26,45 @@ export default function SignUpPage() {
 
   const handleSignup = () => {
     if (formData.password !== formData.confirmPassword) {
-      Alert.alert("회원가입 실패", "비밀번호가 일치하지 않습니다.");
+      setPasswordError("비밀번호가 일치하지 않습니다.");
+      console.log("비밀번호 다름");
+
       return;
     }
-
-    // // 실제 회원가입 로직
-    // console.log("회원가입 정보:", formData);
-    // router.replace("/(tabs)/home"); // 임시로 메인 화면으로 이동
+    setPasswordError(""); // 에러 메시지 초기화
+    console.log("메시지 초기화");
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>회원가입</Text>
-      <TextInput
+      <Input
+        inputContainerStyle={styles.inputContainer}
         style={styles.input}
-        placeholder="아이디"
+        placeholder="이메일"
+        inputMode="email"
         value={formData.username}
         onChangeText={(text) => handleChange("username", text)}
       />
-      <TextInput
+      <Input
+        inputContainerStyle={styles.inputContainer}
+        style={styles.input}
+        placeholder="닉네임"
+        value={formData.nickname}
+        onChangeText={(text) => handleChange("nickname", text)}
+      />
+
+      <Input
+        inputContainerStyle={styles.inputContainer}
         style={styles.input}
         placeholder="비밀번호"
         secureTextEntry
         value={formData.password}
         onChangeText={(text) => handleChange("password", text)}
+        errorMessage={passwordError}
       />
-      <TextInput
+      <Input
+        inputContainerStyle={styles.inputContainer}
         style={styles.input}
         placeholder="비밀번호 확인"
         secureTextEntry
@@ -83,11 +99,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#4CAF50",
     paddingVertical: 12,
   },
-  input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
+  inputContainer: {
+    backgroundColor: "#f2f2f2",
+    borderRadius: 8,
+    borderBottomWidth: 0,
     marginBottom: 10,
     paddingHorizontal: 10,
+  },
+  input: {
+    fontSize: 16,
   },
 });
