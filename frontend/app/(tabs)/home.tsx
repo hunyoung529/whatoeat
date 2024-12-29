@@ -1,177 +1,199 @@
-import { Text, Input, Button, Image } from "@rneui/themed";
-import { useEffect, useState } from "react";
-import { StyleSheet, View, TouchableOpacity, FlatList,Dimensions  } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { Input } from "@rneui/themed";
 import Constants from "expo-constants";
 
-interface RowData {
-  COOK_MTH: string;
-  PRDLST_NM: string;
-  [key: string]: any;
-}
+import SeasonFilterButtons from "@/components/SeasonFilterButtons";
+import IngredientGrid from "@/components/home/IngredientGrid";
+import Pagination from "@/components/home/Pagination";
 
-interface GridData {
-  endRow: number;
-  result: { code: string; message: string };
-  row: RowData[];
-  startRow: number;
-  totalCnt: number;
-}
-
-interface ApiResponse {
-  Grid_20171128000000000572_1: GridData;
-}
-
-export default function Home() {
+export default function HomeScreen() {
   const vegeApiKey = Constants.expoConfig?.extra?.VEGETABLE_API_KEY;
-  const [startIndex, setStartIndex] = useState(1);
-  const [endIndex, setEndIndex] = useState(2);
-  const [vegetableData, setVegetableData] = useState<ApiResponse | null>(null);
+
+  // API 요청 범위 (필요에 따라 조정)
+  const [startIndex] = useState(1);
+  const [endIndex] = useState(300); // 충분히 넉넉하게 잡는 게 좋을 수 있음
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // 전체 데이터 (한 번만 API로 불러오고 보관)
+  const [allData, setAllData] = useState<any[]>([]);
+  // 실제로 화면에 필터링되어 보여줄 데이터
+  const [data, setData] = useState<any[]>([]);
+
+  // 계절 필터 버튼
   const seasons = ["봄", "여름", "가을", "겨울", "전체"];
-  const ITEMS_PER_PAGE = 4; // 한 페이지에 표시할 항목 수
-  const { width } = Dimensions.get('window');
 
+  // 화면 너비 (필요하다면 사용)
+  const { width } = Dimensions.get("window");
 
-  const [data, setData] = useState([]);
+  // 페이지네이션
+  const ITEMS_PER_PAGE = 4;
   const [currentPage, setCurrentPage] = useState(1);
 
-  // 랜덤 데이터 생성
-  useEffect(() => {
-    const generateData = () => {
-      const items = [
-        { id: 1, name: "가지", image: "https://via.placeholder.com/100" },
-        { id: 2, name: "이름", image: "https://via.placeholder.com/100" },
-        { id: 3, name: "계란", image: "https://via.placeholder.com/100" },
-        { id: 4, name: "겨울", image: "https://via.placeholder.com/100" },
-        { id: 5, name: "무", image: "https://via.placeholder.com/100" },
-        { id: 6, name: "고구마", image: "https://via.placeholder.com/100" },
-        { id: 7, name: "양파", image: "https://via.placeholder.com/100" },
-        { id: 8, name: "파프리카", image: "https://via.placeholder.com/100" },
-        { id: 9, name: "호박", image: "https://via.placeholder.com/100" },
-        { id: 10, name: "마늘", image: "https://via.placeholder.com/100" },
-      ];
-      return items.sort(() => Math.random() - 0.5); // 랜덤 정렬
-    };
-    setData(generateData());
-  }, []);
-
-  //지금 인기!
-  const data1 = [
-    { id: 1, name: "레시피 1", image: "https://via.placeholder.com/100" },
-    { id: 2, name: "레시피 2", image: "https://via.placeholder.com/100" },
-    { id: 3, name: "레시피 3", image: "https://via.placeholder.com/100" },
-    { id: 4, name: "레시피 4", image: "https://via.placeholder.com/100" },
-    { id: 5, name: "레시피 5", image: "https://via.placeholder.com/100" },
-  ];
-
-  // 현재 페이지에 표시할 데이터 가져오기
+  const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
   const paginatedData = data.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
 
-  // 총 페이지 수 계산
-  const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
-
-  const handlePress = (season) => {
-    console.log(`${season} 버튼이 클릭되었습니다!`);
+  /**
+   * [도우미] 월 -> 계절
+   */
+  const getSeasonFromMonth = (month: number) => {
+    if ([12, 1, 2].includes(month)) return "겨울";
+    if ([3, 4, 5].includes(month)) return "봄";
+    if ([6, 7, 8].includes(month)) return "여름";
+    return "가을";
   };
 
+  /**
+   * [도우미] 계절 -> months 배열
+   */
+  const getMonthsBySeason = (season: string) => {
+    switch (season) {
+      case "봄":
+        return [3, 4, 5];
+      case "여름":
+        return [6, 7, 8];
+      case "가을":
+        return [9, 10, 11];
+      case "겨울":
+        return [12, 1, 2];
+      default:
+        return []; // "전체" 등
+    }
+  };
+
+  /**
+   * [도우미] allData 중에서 '계절'에 맞는 데이터만 필터링
+   * - M_DISTCTNS: "5월" 또는 "3월,4월,5월" 형태라면,
+   *   콤마(,)로 split한 뒤 각각 "5월" -> 숫자 5 추출
+   */
+  const filterBySeason = (season: string) => {
+    // "전체"면 그냥 전체 반환
+    if (season === "전체") {
+      return allData;
+    }
+
+    const months = getMonthsBySeason(season); // 예: [3,4,5]
+
+    // 예) M_DISTCTNS="3월,4월,5월," 형태로 들어오는 경우도 있으므로 ','로 split
+    //     "3월" -> 3으로 추출
+    const filtered = allData.filter((item) => {
+      if (!item.M_DISTCTNS) return false;
+
+      // "3월,4월,5월," -> ["3월","4월","5월",""]
+      // 빈 문자열 필터링
+      const monthStrings = item.M_DISTCTNS.split(",").filter(Boolean);
+
+      // 하나라도 months 배열에 포함되면 true
+      return monthStrings.some((mStr: string) => {
+        const justNumber = parseInt(mStr.replace("월", ""), 10); // "5월" -> 5
+        return months.includes(justNumber);
+      });
+    });
+
+    return filtered;
+  };
+
+  /**
+   * [핸들러] 시즌 버튼을 눌렀을 때 (API 재호출 X, local filter)
+   */
+  const handleSeasonPress = (season: string) => {
+    try {
+      setError("");
+      setLoading(true);
+      setCurrentPage(1); // 필터 바뀌면 페이지도 1로 리셋
+
+      const filteredData = filterBySeason(season);
+      setData(filteredData);
+    } catch (err) {
+      console.error(err);
+      setError("필터링 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * 화면 첫 진입 시, 전체 데이터를 한 번 가져오고
+   * 가져온 후 현재 달(계절)로 초기 필터를 적용
+   */
   useEffect(() => {
-    const fetchVegetableData = async () => {
+    const fetchAllData = async () => {
       try {
-        const vegeUrl = `http://211.237.50.150:7080/openapi/${vegeApiKey}/json/Grid_20171128000000000572_1/${startIndex}/${endIndex}?M_DISTCTNS=5월`;
-        const response = await fetch(vegeUrl);
+        setLoading(true);
+        setError("");
 
-        if (!response.ok) {
-          throw new Error(`API 요청 실패: ${response.status}`);
+        // "전체" 데이터 한번에 불러오기
+        const vegeUrl = `http://211.237.50.150:7080/openapi/${vegeApiKey}/json/Grid_20171128000000000572_1/${startIndex}/${endIndex}`;
+        const res = await fetch(vegeUrl);
+        if (!res.ok) {
+          throw new Error(`API 오류: ${res.status}`);
         }
+        const jsonData = await res.json();
 
-        const data = await response.json();
-        console.log("Fetched data:", data); // 데이터 구조 확인
-        setVegetableData(data);
+        // row만 추출
+        const rows = jsonData.Grid_20171128000000000572_1?.row || [];
+        setAllData(rows);
+
+        // 2. 초기 계절 필터 적용
+        const currentMonth = new Date().getMonth() + 1; // 1~12
+        const defaultSeason = getSeasonFromMonth(currentMonth);
+        const filteredData = filterBySeason(defaultSeason);
+        setData(filteredData);
       } catch (err) {
-        console.error("Error fetching data:", err);
-        setError("데이터를 불러오는 중 오류가 발생했습니다.");
+        console.error(err);
+        setError("전체 데이터를 불러오는 중 오류가 발생했습니다.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchVegetableData();
-  }, [startIndex, endIndex, vegeApiKey]);
+    fetchAllData();
+  }, []);
 
-  console.log(vegetableData?.Grid_20171128000000000572_1);
+  // 로딩/에러 처리
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>로딩 중...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ color: "red" }}>{error}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <View>
-        <Input placeholder="식재료 혹은 레시피를 검색해주세요" />
-      </View>
-      <View style={styles.buttonGroup}>
-        {seasons.map((season, index) => (
-          <Button
-            key={index}
-            title={season}
-            buttonStyle={styles.button}
-            onPress={() => handlePress(season)}
-          />
-        ))}
-      </View>
+      {/* 검색 영역 */}
+      <Input placeholder="식재료 혹은 레시피를 검색해주세요" />
 
-      <Text style={styles.text}>지금 제철인 재료</Text>
+      {/* 시즌 필터 버튼 그룹 */}
+      <SeasonFilterButtons seasons={seasons} onPress={handleSeasonPress} />
 
-      {/* 랜덤 이미지 리스트 */}
-      <FlatList
-        data={paginatedData}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2} // 2열 그리드
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Image source={{ uri: item.image }} style={styles.image} />
-            <Text style={styles.text}>{item.name}</Text>
-          </View>
-        )}
-      />
+      <Text style={styles.title}>지금 제철인 재료</Text>
+
+      {/* 제철 재료 그리드 (페이지네이션 적용된 결과) */}
+      <IngredientGrid data={paginatedData} />
 
       {/* 페이지네이션 */}
-      <View style={styles.pagination}>
-        {Array.from({ length: totalPages }, (_, index) => (
-          <TouchableOpacity
-            key={index + 1}
-            onPress={() => setCurrentPage(index + 1)}
-            style={[
-              styles.pageButton,
-              currentPage === index + 1 && styles.activePageButton,
-            ]}
-          >
-            <Text
-              style={[
-                styles.pageText,
-                currentPage === index + 1 && styles.activePageText,
-              ]}
-            >
-              {index + 1}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      <Text style={styles.text}>지금 인기 레시피</Text>
-
-      <FlatList
-        data={data1}
-        style={{ height: 100 }} 
-        horizontal // 가로 스크롤 활성화
-        showsHorizontalScrollIndicator={false} // 스크롤바 숨기기
-        renderItem={({ item }) => (
-          <View style={styles.smallCard}>
-            <Image source={{ uri: item.image }} style={styles.smallImage}  />
-            <Text  style={styles.smallText}>{item.name}</Text>
-          </View>
-        )}
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
       />
+
+      <Text style={styles.title}>지금 인기 레시피</Text>
+      {/* <PopularRecipesHorizontal data={someData} /> */}
     </View>
   );
 }
@@ -179,92 +201,12 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     padding: 20,
     backgroundColor: "white",
   },
-  text: {
-    color: "black",
-    
-    fontSize: 16,
-    fontWeight: "500",
-  },
-
-  buttonGroup: {
-    flexDirection: "row", // 버튼들을 가로로 배치
-    justifyContent: "space-around", // 버튼 간의 간격 조절
-    flex: 1, // 버튼 그룹에만 flex 적용
-  },
-  button: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    backgroundColor: "#86BF3E",
-  },
   title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 16,
-    textAlign: "center",
-  },
-  card: {
-    flex: 1,
-    alignItems: "center",
-    margin: 8,
-    backgroundColor: "#f9f9f9",
-    padding: 16,
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-  },
-  image: {
-    width: 100,
-    height: 100,
-    marginBottom: 8,
-    borderRadius: 8,
-  },
-  pagination: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 16,
-  },
-  pageButton: {
-    marginHorizontal: 4,
-    padding: 8,
-    borderRadius: 4,
-    backgroundColor: "#ddd",
-  },
-  activePageButton: {
-    backgroundColor: "#333",
-  },
-  pageText: {
-    fontSize: 14,
-    color: "#000",
-  },
-  activePageText: {
-    color: "#fff",
-  },
-  // 인기 레시피용 스타일
-  smallCard: {
-    marginHorizontal: 8,
-    padding: 8,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    alignItems: 'center',
-    width: 80, // 더 작은 너비 설정
-    height: 80, // 높이 줄이기
-  },
-  smallImage: {
-    width: 50, // 이미지 크기 축소
-    height: 50, // 이미지 크기 축소
-    borderRadius: 6,
-    marginBottom: 4,
-  },
-  smallText: {
-    fontSize: 10, // 텍스트 크기 축소
-    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: "600",
+    marginVertical: 8,
   },
 });
