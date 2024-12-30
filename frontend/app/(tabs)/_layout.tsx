@@ -1,32 +1,41 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform } from "react-native";
-
+import { Platform, StatusBar, SafeAreaView  } from "react-native"; //헤더 위치 조절
+import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Octicons from "react-native-vector-icons/Octicons";
+import Feather from "react-native-vector-icons/Feather";
 import { HapticTab } from "@/components/HapticTab";
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 import Header from "@/components/Header";
 
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: true,
-        header:({ navigation, route, options })=> <Header navigation={navigation}/>,
+        header: ({ navigation, route, options }) => (
+
+          <Header navigation={navigation} />
+      
+        ),
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
             // Use a transparent background on iOS to show the blur effect
-            position: "absolute",
+            position: "absolute", // iOS에서 투명 배경 효과
+           
           },
-          default: {},
+          default: {
+          },
         }),
       }}
     >
@@ -34,8 +43,11 @@ export default function TabLayout() {
         name="home"
         options={{
           title: "Home",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={30} name="house.fill" color={color} />
+          tabBarLabelStyle: {
+          
+          },
+          tabBarIcon: ({ color}) => (
+          <Octicons name = "home" size={20} color={color}/>
           ),
         }}
       />
@@ -44,7 +56,8 @@ export default function TabLayout() {
         options={{
           title: "recipes",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={30} name="paperplane.fill" color={color} />
+            <Icons name= "chef-hat" size={20} color={color}
+            />
           ),
         }}
       />
@@ -54,7 +67,7 @@ export default function TabLayout() {
         options={{
           title: "like",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={30} name="paperplane.fill" color={color} />
+            <Octicons name = "heart" size={20} color={color}/>
           ),
         }}
       />
@@ -64,7 +77,7 @@ export default function TabLayout() {
         options={{
           title: "my",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={30} name="paperplane.fill" color={color} />
+           <Feather name="user" size={20} color={color}/>
           ),
         }}
       />

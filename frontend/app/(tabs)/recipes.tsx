@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  ActivityIndicator,
-  FlatList,
-} from "react-native";
+import { StyleSheet,Text,View,ActivityIndicator,FlatList,} from "react-native";
 //import { RECIPES_API_KEY } from ''; // '@env'로 환경 변수 가져오기
 import { useEffect, useState } from "react";
 import Constants from "expo-constants";
