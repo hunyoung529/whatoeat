@@ -7,6 +7,8 @@ const passport = require("passport");
 const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/posts");
 const userRoutes = require("./routes/users");
+const recipesRoutes =require("./routes/recipes");
+
 require("./config/passport")(passport);
 
 const app = express();
@@ -25,5 +27,7 @@ app.use(passport.initialize());
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/recipes", recipesRoutes);
+
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
