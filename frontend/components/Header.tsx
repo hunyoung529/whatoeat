@@ -19,7 +19,7 @@ export default function Header() {
         icon={
           <FontAwesome
             name="pencil-square-o"
-            size={25}/>
+            size={28}/>
         }
         buttonStyle={styles.buttonStyle} // 버튼 스타일 수정
         containerStyle={styles.buttonContainer} // 컨테이너 스타일 수정

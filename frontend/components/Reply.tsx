@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     alignItems: "center", // 세로 중앙 정렬
     justifyContent: "space-between", // 요소 간 간격
     padding: 10,
-    backgroundColor: "#e8f0ff", // 배경색 추가
+    backgroundColor: "#E4E6E9", // 배경색 추가
     borderRadius: 10, // 둥근 모서리
     marginBottom: 10, // 아래 간격 추가
   },
@@ -106,11 +106,12 @@ const styles = StyleSheet.create({
     flexDirection: "row", // 아이콘과 텍스트 입력을 가로로 정렬
     alignItems: "center", // 세로 정렬
     borderWidth: 1, // 테두리 두께
-    borderColor: "#8A949F", // 테두리 색상
+    borderColor: "#E4E6E9", // 테두리 색상
     borderRadius: 15, // 테두리 모서리를 둥글게
     paddingHorizontal: 8, // 내부 여백
     paddingVertical: 8, // 내부 여백
-    width: 370, // 인풋 길이 조정
+    width: "100%", // 부모 요소의 90% 너비
+    alignSelf: "center", // 가운데 정렬
   },
   textInput: {
     flex: 1, // 입력 필드가 가용 공간을 모두 차지하도록 설정
