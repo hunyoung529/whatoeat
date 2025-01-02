@@ -1,4 +1,4 @@
-import { StyleSheet,Text,View,ActivityIndicator,FlatList,} from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator,FlatList,Image} from "react-native";
 //import { RECIPES_API_KEY } from ''; // '@env'로 환경 변수 가져오기
 import { useEffect, useState } from "react";
 import Constants from "expo-constants";
@@ -59,16 +59,44 @@ export default function Recipes() {
       <FlatList
         data={recipes}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.recipeItem}>
-            <Text style={styles.recipeTitle}>{item.RCP_NM}</Text>
-            <Text>{item.RCP_PARTS_DTLS}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => {
+          // "\n"으로 데이터를 나누고 첫 번째 줄 제외
+          const partsDetails = item.RCP_PARTS_DTLS.split("\n")
+            .slice(1)
+            .join("\n");
+
+          return (
+            <View style={styles.recipeItem}>
+              <Text style={styles.recipeTitle}>{item.RCP_NM}</Text>
+              <View style={styles.recipeImageContainer}>
+              <Image style={styles.recipeImage} 
+                source={{ uri: item.ATT_FILE_NO_MK }}
+                resizeMode="contain" // 비율 유지하며 전체 표시
+              />
+
+              </View>
+             
+              <Text style={styles.sectionHeader}>재료</Text>
+              <Text>{partsDetails}</Text>
+              <Text style={styles.sectionHeader}>요리순서</Text>
+              <Text>{item.MANUAL01}</Text>
+              <Text>{item.MANUAL02}</Text>
+              <Text>{item.MANUAL03}</Text>
+
+              <Text style={styles.sectionHeader}>저감 요리법</Text>
+              <Text>{item.RCP_NA_TIP}</Text>
+
+
+
+              
+            </View>
+          );
+        }}
       />
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -81,17 +109,37 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  errorText: {
-    color: "red",
-    fontSize: 16,
-  },
   recipeItem: {
+    marginBottom: 16,
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
   recipeTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  
+  recipeImageContainer: {
+    width: "100%",
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0", // 디버깅용 배경색
+    borderRadius: 8,
+    overflow: "hidden", // 둥근 모서리 효과
+    marginBottom: 8,
+  },
+  recipeImage: {
+    width: "100%", // 부모 크기에 맞춤
+    height: "100%", // 부모 크기에 맞춤
+  },
+  sectionHeader: {
     fontSize: 18,
     fontWeight: "bold",
+    marginTop: 16,
+    marginBottom: 8,
   },
 });
+
