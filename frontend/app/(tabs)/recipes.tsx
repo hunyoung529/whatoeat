@@ -1,145 +1,213 @@
-import { StyleSheet, Text, View, ActivityIndicator,FlatList,Image} from "react-native";
-//import { RECIPES_API_KEY } from ''; // '@env'로 환경 변수 가져오기
-import { useEffect, useState } from "react";
-import Constants from "expo-constants";
+import { StyleSheet, Text, View, TouchableOpacity,FlatList,Image  } from "react-native";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import FontAwesome from "react-native-vector-icons/FontAwesome";; // 하트 아이콘 사용
+
+const type = ["한식", "양식", "일식", "중식", "기타"];
+
+//임시 레시피 데이터
+const recipes = [
+  {
+    id: "32",
+    title: "둘이 먹다 둘이 죽는 파스타 맛",
+    type:"양식",
+    user_id: "파스타없음죽어",
+    time: "약 15분",
+    image: "https://static.wtable.co.kr/image/production/service/recipe/1767/8a70db02-325f-4dd0-9780-625a2e7cfefe.jpg", // 이미지 URL (샘플)
+    likes: 33,
+  },
+  {
+    id: "31",
+    title: "매콤한 떡볶이 레시피",
+    type:"한식",
+    user_id: "한국음식킬러",
+    time: "약 20분",
+    image: "https://i.namu.wiki/i/A5AIHovo1xwuEjs7V8-aKpZCSWY2gN3mZEPR9fymaez_J7ufmI9B7YyDBu6kZy9TC9VWJatXVJZbDjcYLO2S8Q.webp",
+    likes: 45,
+  },
+  {
+    id: "3",
+    title: "비법 푼다! 해물탕!",
+    type:"한식",
+    user_id: "소주가 좋아아",
+    time: "약 1시간 30분",
+    image: "https://recipe1.ezmember.co.kr/cache/recipe/2015/05/12/ea898a405bb0c70828b84b6b3ec464451.jpg",
+    likes: 75,
+  },
+  {
+    id: "4",
+    title: "쪽갈비",
+    type:"한식",
+    user_id: "고기사냥냥",
+    time: "약 1시간 30분",
+    image: "https://sitem.ssgcdn.com/40/25/53/item/1000554532540_i1_750.jpg",
+    likes: 75,
+  },
+  {
+    id: "5",
+    title: "초밥 만드는 법법!",
+    type:"일식",
+    user_id: "나는야뱃사람람",
+    time: "약 10분분",
+    image: "https://gurunavi.com/ko/japanfoodie/article/sushi/img/sushi_01.jpg",
+    likes: 5,
+  },
+];
+
+
+
 export default function Recipes() {
-  const RECIPES_API_KEY = Constants.expoConfig?.extra?.RECIPES_API_KEY;
-  const API_URL = `http://openapi.foodsafetykorea.go.kr/api/${RECIPES_API_KEY}/COOKRCP01/json/1/5`;
-  console.log("API_KEY:", RECIPES_API_KEY);
-  console.log("API_URL:", API_URL);
+  const router = useRouter();
 
-  const [recipes, setRecipes] = useState([]); // 레시피 데이터를 저장할 상태
-  const [loading, setLoading] = useState(true); // 로딩 상태
-  const [error, setError] = useState(null); // 에러 상태
-
-  // API 호출 함수
-  const fetchRecipes = async () => {
-    try {
-      setLoading(true); // 로딩 시작
-      const response = await fetch(API_URL);
-      if (!response.ok) {
-        throw new Error("Failed to fetch recipes");
-      }
-      const data = await response.json(); // JSON 데이터 파싱
-      const recipes = data.COOKRCP01?.row || []; // API 응답 구조에 맞게 데이터 파싱
-      setRecipes(recipes);
-    } catch (err) {
-      setError(err.message); // 에러 저장
-    } finally {
-      setLoading(false); // 로딩 종료
-    }
-  };
-
-  // 컴포넌트가 마운트될 때 API 호출
-  useEffect(() => {
-    fetchRecipes();
-  }, []);
-
-  // 로딩 중일 때
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading recipes...</Text>
+  const [selected, setSelected] = useState("한식"); // 선택된 type 버튼 상태
+  //레시피 나열 카드
+  const renderRecipe = ({ item }) => (
+    
+    <TouchableOpacity
+    style={styles.card}
+    onPress={() => router.push(`/recipesDetail/${item.id}`)} // 각 카드 클릭 시 상세 페이지로 이동
+  >
+    <Image source={{ uri: item.image }} style={styles.image} />
+    <View style={styles.cardContent}>
+      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.category}>{item.user_id}</Text>
+      <Text style={styles.time}>{item.time}</Text>
+      <View style={styles.footer}>
+        <FontAwesome name="heart-o" size={18} color="gray" />
+        <Text style={styles.likes}>{item.likes}</Text>
       </View>
-    );
-  }
+    </View>
+  </TouchableOpacity>
+  )
 
-  // 에러 발생 시
-  if (error) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.errorText}>Error: {error}</Text>
-      </View>
-    );
-  }
+
 
   return (
     <View style={styles.container}>
+
+      <View style={styles.btns}>
+      {type.map((item) => (
+        <TouchableOpacity
+          key={item}
+          style={[styles.button, selected === item && styles.selectedButton]} // 선택된 버튼에 스타일 추가
+          onPress={() => setSelected(item)} // 버튼 클릭 시 상태 변경
+        >
+          <Text
+            style={[
+              styles.buttonText,
+              selected === item && styles.selectedButtonText,
+            ]}
+          >
+            {item}
+          </Text>
+        </TouchableOpacity>
+      ))}
+
+      </View>
+    
+
+
+
+      <View style={styles.cardList}>
       <FlatList
-        data={recipes}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => {
-          // "\n"으로 데이터를 나누고 첫 번째 줄 제외
-          const partsDetails = item.RCP_PARTS_DTLS.split("\n")
-            .slice(1)
-            .join("\n");
-
-          return (
-            <View style={styles.recipeItem}>
-              <Text style={styles.recipeTitle}>{item.RCP_NM}</Text>
-              <View style={styles.recipeImageContainer}>
-              <Image style={styles.recipeImage} 
-                source={{ uri: item.ATT_FILE_NO_MK }}
-                resizeMode="contain" // 비율 유지하며 전체 표시
-              />
-
-              </View>
-             
-              <Text style={styles.sectionHeader}>재료</Text>
-              <Text>{partsDetails}</Text>
-              <Text style={styles.sectionHeader}>요리순서</Text>
-              <Text>{item.MANUAL01}</Text>
-              <Text>{item.MANUAL02}</Text>
-              <Text>{item.MANUAL03}</Text>
-
-              <Text style={styles.sectionHeader}>저감 요리법</Text>
-              <Text>{item.RCP_NA_TIP}</Text>
-
-
-
-              
-            </View>
-          );
-        }}
-      />
+      data={recipes}
+      keyExtractor={(item) => item.id}
+      renderItem={renderRecipe}
+      contentContainerStyle={styles.list}
+      numColumns={2} // 한 줄에 두 개씩 배치
+      showsVerticalScrollIndicator={false} // 스크롤바 숨김
+      bounces={true} // 끝에서 튕김 효과
+    />
+      </View>
     </View>
   );
 }
 
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#fff",
+  container:{
+  flex: 1, // 화면 전체를 차지하도록 설정
+  backgroundColor: "white",
+  padding: 10, // 전체적인 내부 여백 추가
   },
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  btns: {
+    flexDirection: "row", // 가로로 버튼 배치
+    justifyContent: "space-around", // 버튼 간 간격 일정
+    alignItems: "center", // 세로 중앙 정렬
+    padding: 10,
   },
-  recipeItem: {
-    marginBottom: 16,
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
+  button: {
+    borderWidth: 1, // 테두리 추가
+    borderColor: "#ccc", // 테두리 색상
+    borderRadius: 5, // 둥근 버튼
+    paddingVertical: 8, // 버튼 상하 패딩
+    paddingHorizontal: 15, // 버튼 좌우 패딩
+    backgroundColor: "#fff", // 기본 버튼 배경색
+    marginHorizontal: 5, // 버튼 간 좌우 간격
   },
-  recipeTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 8,
+  buttonText: {
+    fontSize: 16,
+    color: "#555", // 기본 텍스트 색상
+  },
+  selectedButton: {
+    backgroundColor: "#8BC34A", // 선택된 버튼 배경색
+    borderColor: "#8BC34A", // 선택된 버튼 테두리 색상
+  },
+  selectedButtonText: {
+    color: "#fff", // 선택된 버튼 텍스트 색상
   },
   
-  recipeImageContainer: {
+  list: {
+    paddingHorizontal: 10, 
+    paddingBottom: 100,
+    borderColor:"#B7BDC4"
+
+  },
+  
+  card: {
+    flex: 1, // 카드가 같은 줄에서 균등하게 배치되도록 설정
+    width: "48%", // 카드의 고정 크기 설정
+    margin: "2%", // 카드 간의 간격을 유지
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    overflow: "hidden",
+    elevation: 3, // 그림자 효과 (Android)
+    shadowColor: "#000", // 그림자 효과 (iOS)
+    borderColor: "#B7BDC4", // 테두리 색상
+    borderWidth: 1, // 테두리 두께 추가
+  },
+  cardList:{
+    padding: 10, // 내부 여백 추가
+    marginTop: 10, // 상단 여백
+  },
+  image: {
     width: "100%",
-    height: 200,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f0f0f0", // 디버깅용 배경색
-    borderRadius: 8,
-    overflow: "hidden", // 둥근 모서리 효과
-    marginBottom: 8,
+    height: 120,
   },
-  recipeImage: {
-    width: "100%", // 부모 크기에 맞춤
-    height: "100%", // 부모 크기에 맞춤
+  cardContent: {
+    padding: 10,
   },
-  sectionHeader: {
-    fontSize: 18,
+  title: {
+    fontSize: 16,
     fontWeight: "bold",
-    marginTop: 16,
     marginBottom: 8,
+  },
+  category: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 8,
+  },
+  time: {
+    fontSize: 14,
+    color: "#888",
+    marginBottom: 8,
+  },
+  footer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  likes: {
+    fontSize: 14,
+    color: "#555",
+    marginLeft: 8,
   },
 });
-
