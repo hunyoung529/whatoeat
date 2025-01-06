@@ -8,6 +8,8 @@ import IngredientGrid from "@/components/home/IngredientGrid";
 import Pagination from "@/components/home/Pagination";
 
 export default function HomeScreen() {
+  console.log('home 보이나?');
+  
   const vegeApiKey = Constants.expoConfig?.extra?.VEGETABLE_API_KEY;
 
   // API 요청 범위 (필요에 따라 조정)

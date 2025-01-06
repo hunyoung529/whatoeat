@@ -1,7 +1,7 @@
-import { Tabs } from "expo-router";
-import React from "react";
-import { Platform, StatusBar, SafeAreaView  } from "react-native"; //헤더 위치 조절
-import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Tabs, useRouter } from "expo-router";
+import React, { useEffect } from "react";
+import { Platform, SafeAreaView } from "react-native";
+import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import Octicons from "react-native-vector-icons/Octicons";
 import Feather from "react-native-vector-icons/Feather";
 import { HapticTab } from "@/components/HapticTab";
@@ -14,6 +14,9 @@ import Header from "@/components/Header";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+
+  const router = useRouter();
+
 
 
   return (
@@ -39,16 +42,13 @@ export default function TabLayout() {
         }),
       }}
     >
-      <Tabs.Screen
+    <Tabs.Screen
         name="home"
         options={{
-          title: "Home",
-          tabBarLabelStyle: {
-          
-          },
-          tabBarIcon: ({ color}) => (
-          <Octicons name = "home" size={20} color={color}/>
-          ),
+          title: "home",
+           tabBarIcon: ({ color }) => (
+                      <Octicons name="home" size={20} color={color} />
+                    ),
         }}
       />
       <Tabs.Screen
@@ -80,7 +80,7 @@ export default function TabLayout() {
            <Feather name="user" size={20} color={color}/>
           ),
         }}
-      />
+      /> 
     </Tabs>
   );
 }

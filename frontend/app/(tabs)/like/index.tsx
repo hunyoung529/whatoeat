@@ -4,7 +4,8 @@ import Reply from "@/components/Reply";
 
 function like() {
   return (
-    <View>
+    <View >
+      
       <Reply />
     </View>
   );

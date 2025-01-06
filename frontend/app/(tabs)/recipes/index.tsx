@@ -1,14 +1,15 @@
 import { StyleSheet, Text, View, TouchableOpacity,FlatList,Image  } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter } from 'expo-router';
 import { useState } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";; // 하트 아이콘 사용
+
 
 const type = ["한식", "양식", "일식", "중식", "기타"];
 
 //임시 레시피 데이터
 const recipes = [
   {
-    id: "32",
+    id: "28",
     title: "둘이 먹다 둘이 죽는 파스타 맛",
     type:"양식",
     user_id: "파스타없음죽어",
@@ -17,7 +18,7 @@ const recipes = [
     likes: 33,
   },
   {
-    id: "31",
+    id: "29",
     title: "매콤한 떡볶이 레시피",
     type:"한식",
     user_id: "한국음식킬러",
@@ -26,7 +27,7 @@ const recipes = [
     likes: 45,
   },
   {
-    id: "3",
+    id: "31",
     title: "비법 푼다! 해물탕!",
     type:"한식",
     user_id: "소주가 좋아아",
@@ -35,7 +36,7 @@ const recipes = [
     likes: 75,
   },
   {
-    id: "4",
+    id: "32",
     title: "쪽갈비",
     type:"한식",
     user_id: "고기사냥냥",
@@ -44,7 +45,7 @@ const recipes = [
     likes: 75,
   },
   {
-    id: "5",
+    id: "33",
     title: "초밥 만드는 법법!",
     type:"일식",
     user_id: "나는야뱃사람람",
@@ -57,15 +58,18 @@ const recipes = [
 
 
 export default function Recipes() {
-  const router = useRouter();
-
+const router = useRouter();
   const [selected, setSelected] = useState("한식"); // 선택된 type 버튼 상태
   //레시피 나열 카드
   const renderRecipe = ({ item }) => (
     
     <TouchableOpacity
     style={styles.card}
-    onPress={() => router.push(`/recipesDetail/${item.id}`)} // 각 카드 클릭 시 상세 페이지로 이동
+    
+    onPress={() => {
+        router.push(`/recipes/${item.id}`);
+      }} // 각 카드 클릭 시 상세 페이지로 이동
+
   >
     <Image source={{ uri: item.image }} style={styles.image} />
     <View style={styles.cardContent}>
