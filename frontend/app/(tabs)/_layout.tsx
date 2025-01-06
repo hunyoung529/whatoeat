@@ -11,44 +11,35 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 
 import Header from "@/components/Header";
 
-
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   const router = useRouter();
-
-
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: true,
-        header: ({ navigation, route, options }) => (
-
-          <Header navigation={navigation} />
-      
-        ),
+        header: ({ navigation, route, options }) => <Header />,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
             // Use a transparent background on iOS to show the blur effect
             position: "absolute", // iOS에서 투명 배경 효과
-           
           },
-          default: {
-          },
+          default: {},
         }),
       }}
     >
-    <Tabs.Screen
+      <Tabs.Screen
         name="home"
         options={{
           title: "home",
-           tabBarIcon: ({ color }) => (
-                      <Octicons name="home" size={20} color={color} />
-                    ),
+          tabBarIcon: ({ color }) => (
+            <Octicons name="home" size={20} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -56,9 +47,14 @@ export default function TabLayout() {
         options={{
           title: "recipes",
           tabBarIcon: ({ color }) => (
-            <Icons name= "chef-hat" size={20} color={color}
-            />
+            <Icons name="chef-hat" size={20} color={color} />
           ),
+        }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault(); // 기본 동작 방지
+            router.replace("/recipes"); // 항상 루트 페이지로 이동
+          },
         }}
       />
 
@@ -67,7 +63,7 @@ export default function TabLayout() {
         options={{
           title: "like",
           tabBarIcon: ({ color }) => (
-            <Octicons name = "heart" size={20} color={color}/>
+            <Octicons name="heart" size={20} color={color} />
           ),
         }}
       />
@@ -77,10 +73,10 @@ export default function TabLayout() {
         options={{
           title: "my",
           tabBarIcon: ({ color }) => (
-           <Feather name="user" size={20} color={color}/>
+            <Feather name="user" size={20} color={color} />
           ),
         }}
-      /> 
+      />
     </Tabs>
   );
 }

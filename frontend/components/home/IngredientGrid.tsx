@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, FlatList } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
+import { Card, Text } from "@rneui/themed";
 
 interface IngredientGridProps {
   data: { ROW_NUM: number; PRDLST_NM: string; IMG_URL: string }[];
@@ -12,9 +13,17 @@ export default function IngredientGrid({ data }: IngredientGridProps) {
       keyExtractor={(item) => item.ROW_NUM.toString()}
       numColumns={2}
       renderItem={({ item }) => (
-        <View style={styles.card}>
-          <Image source={{ uri: item.IMG_URL }} style={styles.image} />
-          <Text style={styles.cardText}>{item.PRDLST_NM}</Text>
+        <View style={styles.cardContainer}>
+          <Card containerStyle={styles.card}>
+            <Card.Image
+              source={{ uri: item.IMG_URL }}
+              style={styles.image}
+              resizeMode="center"
+            />
+            <Text style={styles.cardText} numberOfLines={1}>
+              {item.PRDLST_NM}
+            </Text>
+          </Card>
         </View>
       )}
     />
@@ -22,22 +31,23 @@ export default function IngredientGrid({ data }: IngredientGridProps) {
 }
 
 const styles = StyleSheet.create({
-  card: {
+  cardContainer: {
     flex: 1,
-    alignItems: "center",
-    margin: 8,
-    backgroundColor: "#f9f9f9",
-    padding: 16,
-    borderRadius: 8,
+    margin: 4,
+  },
+  card: {
+    padding: 0,
+    borderRadius: 10,
+    overflow: "hidden",
   },
   image: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-    marginBottom: 8,
+    width: "100%",
+    height: 120,
   },
   cardText: {
+    padding: 8,
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "600",
+    textAlign: "center",
   },
 });
