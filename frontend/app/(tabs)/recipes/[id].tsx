@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router"; // useRouter 사용
 import Constants from "expo-constants";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Reply from "@/components/Reply";
 
 
 
@@ -109,7 +110,13 @@ export default function RecipesDetail() {
         <Text style={styles.sectionHeader}>요리 팁</Text>
         <Text>{recipe.RCP_NA_TIP}</Text>
       </View>
+      <View>
+      <Reply/>
+      </View>
+    
     </View>
+
+
   );
 }
 
