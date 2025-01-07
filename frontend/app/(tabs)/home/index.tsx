@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet,ScrollView } from "react-native";
 import { Input } from "@rneui/themed";
 import Constants from "expo-constants";
 
@@ -188,7 +188,8 @@ export default function HomeScreen() {
       <SeasonFilterButtons seasons={seasons} onPress={handleSeasonPress} />
 
       <Text style={styles.title}>지금 제철인 재료</Text>
-
+      <ScrollView style={styles.content}>
+      
       {/* 제철 재료 그리드 (페이지네이션 적용된 결과) */}
       <IngredientGrid data={paginatedData} />
 
@@ -201,6 +202,9 @@ export default function HomeScreen() {
 
       <Text style={styles.title}>지금 인기 레시피</Text>
       {/* <PopularRecipesHorizontal data={someData} /> */}
+
+      
+      </ScrollView>
     </View>
   );
 }

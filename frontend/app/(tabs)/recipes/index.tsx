@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity,FlatList,Image  } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity,FlatList,Image,ScrollView  } from "react-native";
 import { useRouter } from 'expo-router';
 import { useState } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";; // 하트 아이콘 사용
@@ -53,6 +53,51 @@ const recipes = [
     image: "https://gurunavi.com/ko/japanfoodie/article/sushi/img/sushi_01.jpg",
     likes: 5,
   },
+  {
+    id: "33",
+    title: "초밥 만드는 법법!",
+    type:"일식",
+    user_id: "나는야뱃사람람",
+    time: "약 10분분",
+    image: "https://gurunavi.com/ko/japanfoodie/article/sushi/img/sushi_01.jpg",
+    likes: 5,
+  },
+  {
+    id: "33",
+    title: "초밥 만드는 법법!",
+    type:"일식",
+    user_id: "나는야뱃사람람",
+    time: "약 10분분",
+    image: "https://gurunavi.com/ko/japanfoodie/article/sushi/img/sushi_01.jpg",
+    likes: 5,
+  },
+  {
+    id: "33",
+    title: "초밥 만드는 법법!",
+    type:"일식",
+    user_id: "나는야뱃사람람",
+    time: "약 10분분",
+    image: "https://gurunavi.com/ko/japanfoodie/article/sushi/img/sushi_01.jpg",
+    likes: 5,
+  },
+  {
+    id: "33",
+    title: "초밥 만드는 법법!",
+    type:"일식",
+    user_id: "나는야뱃사람람",
+    time: "약 10분분",
+    image: "https://gurunavi.com/ko/japanfoodie/article/sushi/img/sushi_01.jpg",
+    likes: 5,
+  },
+  {
+    id: "33",
+    title: "초밥 만드는 법법!",
+    type:"일식",
+    user_id: "나는야뱃사람람",
+    time: "약 10분분",
+    image: "https://gurunavi.com/ko/japanfoodie/article/sushi/img/sushi_01.jpg",
+    likes: 5,
+  },
 ];
 
 
@@ -88,6 +133,7 @@ const router = useRouter();
 
   return (
     <View style={styles.container}>
+ <ScrollView style={styles.content}>
 
       <View style={styles.btns}>
       {type.map((item) => (
@@ -123,6 +169,8 @@ const router = useRouter();
       bounces={true} // 끝에서 튕김 효과
     />
       </View>
+      
+            </ScrollView>
     </View>
   );
 }
@@ -162,7 +210,7 @@ const styles = StyleSheet.create({
   
   list: {
     paddingHorizontal: 10, 
-    paddingBottom: 100,
+    
     borderColor:"#B7BDC4"
 
   },

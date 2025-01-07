@@ -8,6 +8,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { ScrollView, StyleSheet, SafeAreaView } from "react-native";
 import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
@@ -32,14 +33,29 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="signup" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-
-        <Stack.Screen name="+not-found" />
-      </Stack>
+      {/* SafeAreaView로 전체 영역 감싸기 */}
+      <SafeAreaView style={styles.container}>
+        {/* ScrollView 추가 */}
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="signup" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </ScrollView>
+      </SafeAreaView>
       <StatusBar style="auto" />
     </ThemeProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff", // 테마에 따라 동적 설정 가능
+  },
+  scrollContainer: {
+    flexGrow: 1, // 스크롤 가능 영역 확장
+  },
+});

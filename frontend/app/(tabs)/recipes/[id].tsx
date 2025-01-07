@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ActivityIndicator, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator, Image, TouchableOpacity, ScrollView  } from "react-native";
 import { useEffect, useState } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router"; // useRouter 사용
 import Constants from "expo-constants";
@@ -92,6 +92,8 @@ export default function RecipesDetail() {
         <Text style={styles.headerTitle}>{`레시피 상세: ${recipe.RCP_NM}`}</Text>
       </View>
 
+      <ScrollView style={styles.content}>
+
       <View style={styles.recipeDetail}>
         <Text style={styles.recipeTitle}>{recipe.RCP_NM}</Text>
         <View style={styles.recipeImageContainer}>
@@ -114,6 +116,7 @@ export default function RecipesDetail() {
       <Reply/>
       </View>
     
+      </ScrollView>
     </View>
 
 
