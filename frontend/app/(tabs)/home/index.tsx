@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Input } from "@rneui/themed";
 import Constants from "expo-constants";
 
@@ -8,13 +8,11 @@ import IngredientGrid from "@/components/home/IngredientGrid";
 import Pagination from "@/components/home/Pagination";
 
 export default function HomeScreen() {
-  console.log('home 보이나?');
-  
   const vegeApiKey = Constants.expoConfig?.extra?.VEGETABLE_API_KEY;
 
   // API 요청 범위 (필요에 따라 조정)
   const [startIndex] = useState(1);
-  const [endIndex] = useState(300); // 충분히 넉넉하게 잡는 게 좋을 수 있음
+  const [endIndex] = useState(300);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -26,9 +24,6 @@ export default function HomeScreen() {
 
   // 계절 필터 버튼
   const seasons = ["봄", "여름", "가을", "겨울", "전체"];
-
-  // 화면 너비 (필요하다면 사용)
-  const { width } = Dimensions.get("window");
 
   // 페이지네이션
   const ITEMS_PER_PAGE = 4;
@@ -145,6 +140,7 @@ export default function HomeScreen() {
         const currentMonth = new Date().getMonth() + 1; // 1~12
         const defaultSeason = getSeasonFromMonth(currentMonth);
         const filteredData = filterBySeason(defaultSeason);
+
         setData(filteredData);
       } catch (err) {
         console.error(err);
@@ -156,6 +152,15 @@ export default function HomeScreen() {
 
     fetchAllData();
   }, []);
+
+  useEffect(() => {
+    if (allData.length > 0) {
+      const currentMonth = new Date().getMonth() + 1;
+      const defaultSeason = getSeasonFromMonth(currentMonth);
+      const filteredData = filterBySeason(defaultSeason);
+      setData(filteredData);
+    }
+  }, [allData]);
 
   // 로딩/에러 처리
   if (loading) {
