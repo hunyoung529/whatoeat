@@ -36,7 +36,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: "home",
+          title: "홈",
           tabBarIcon: ({ color }) => (
             <Octicons name="home" size={20} color={color} />
           ),
@@ -45,7 +45,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="recipes"
         options={{
-          title: "recipes",
+          title: "레시피",
           tabBarIcon: ({ color }) => (
             <Icons name="chef-hat" size={20} color={color} />
           ),
@@ -61,7 +61,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="like"
         options={{
-          title: "like",
+          title: "좋아요",
           tabBarIcon: ({ color }) => (
             <Octicons name="heart" size={20} color={color} />
           ),
@@ -71,7 +71,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="my"
         options={{
-          title: "my",
+          title: "마이",
           tabBarIcon: ({ color }) => (
             <Feather name="user" size={20} color={color} />
           ),
