@@ -10,6 +10,12 @@ export default function HomeLayout() {
           headerShown: false, // 상단 헤더 제거
         }}
       />
+      <Stack.Screen
+        name="[ingredientId]"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }
