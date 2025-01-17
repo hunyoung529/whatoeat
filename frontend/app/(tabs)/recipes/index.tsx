@@ -16,6 +16,7 @@ const recipes = [
     time: "약 15분",
     image: "https://static.wtable.co.kr/image/production/service/recipe/1767/8a70db02-325f-4dd0-9780-625a2e7cfefe.jpg", // 이미지 URL (샘플)
     likes: 33,
+    isLiked: false, // 초기 상태 추가
   },
   {
     id: "29",
@@ -25,6 +26,7 @@ const recipes = [
     time: "약 20분",
     image: "https://i.namu.wiki/i/A5AIHovo1xwuEjs7V8-aKpZCSWY2gN3mZEPR9fymaez_J7ufmI9B7YyDBu6kZy9TC9VWJatXVJZbDjcYLO2S8Q.webp",
     likes: 45,
+    isLiked: false, 
   },
   {
     id: "31",
@@ -34,6 +36,7 @@ const recipes = [
     time: "약 1시간 30분",
     image: "https://recipe1.ezmember.co.kr/cache/recipe/2015/05/12/ea898a405bb0c70828b84b6b3ec464451.jpg",
     likes: 75,
+    isLiked: false, 
   },
   {
     id: "32",
@@ -43,6 +46,7 @@ const recipes = [
     time: "약 1시간 30분",
     image: "https://sitem.ssgcdn.com/40/25/53/item/1000554532540_i1_750.jpg",
     likes: 75,
+    isLiked: false, 
   },
   {
     id: "33",
@@ -52,6 +56,7 @@ const recipes = [
     time: "약 10분분",
     image: "https://gurunavi.com/ko/japanfoodie/article/sushi/img/sushi_01.jpg",
     likes: 5,
+    isLiked: false, 
   },
   {
     id: "33",
@@ -61,6 +66,7 @@ const recipes = [
     time: "약 10분분",
     image: "https://gurunavi.com/ko/japanfoodie/article/sushi/img/sushi_01.jpg",
     likes: 5,
+    isLiked: false, 
   },
   {
     id: "33",
@@ -70,6 +76,17 @@ const recipes = [
     time: "약 10분분",
     image: "https://gurunavi.com/ko/japanfoodie/article/sushi/img/sushi_01.jpg",
     likes: 5,
+    isLiked: false, 
+  },
+  {
+    id: "33",
+    title: "초밥 만드는 법!",
+    type:"일식",
+    user_id: "나는야뱃사람",
+    time: "약 10분분",
+    image: "https://gurunavi.com/ko/japanfoodie/article/sushi/img/sushi_01.jpg",
+    likes: 5,
+    isLiked: false, 
   },
   {
     id: "33",
@@ -79,6 +96,7 @@ const recipes = [
     time: "약 10분분",
     image: "https://gurunavi.com/ko/japanfoodie/article/sushi/img/sushi_01.jpg",
     likes: 5,
+    isLiked: false, 
   },
   {
     id: "33",
@@ -88,15 +106,7 @@ const recipes = [
     time: "약 10분분",
     image: "https://gurunavi.com/ko/japanfoodie/article/sushi/img/sushi_01.jpg",
     likes: 5,
-  },
-  {
-    id: "33",
-    title: "초밥 만드는 법법!",
-    type:"일식",
-    user_id: "나는야뱃사람람",
-    time: "약 10분분",
-    image: "https://gurunavi.com/ko/japanfoodie/article/sushi/img/sushi_01.jpg",
-    likes: 5,
+    isLiked: false, 
   },
 ];
 
@@ -105,6 +115,23 @@ const recipes = [
 export default function Recipes() {
 const router = useRouter();
   const [selected, setSelected] = useState("한식"); // 선택된 type 버튼 상태
+  const [recipeList, setRecipeList] = useState(recipes); // 좋아요 상태를 관리하는 배열
+
+   // 좋아요 토글 함수
+   const toggleLike = (id) => {
+    setRecipeList((prevRecipes) =>
+      prevRecipes.map((recipe) =>
+        recipe.id === id
+          ? {
+              ...recipe,
+              isLiked: !recipe.isLiked, // 좋아요 상태 변경
+              likes: recipe.isLiked ? recipe.likes - 1 : recipe.likes + 1, // 좋아요 수 증가/감소
+            }
+          : recipe
+      )
+    );
+  };
+
   //레시피 나열 카드
   const renderRecipe = ({ item }) => (
     
@@ -122,8 +149,13 @@ const router = useRouter();
       <Text style={styles.category}>{item.user_id}</Text>
       <Text style={styles.time}>{item.time}</Text>
       <View style={styles.footer}>
-        <FontAwesome name="heart-o" size={18} color="gray" />
-        <Text style={styles.likes}>{item.likes}</Text>
+      <TouchableOpacity onPress={() => toggleLike(item.id)}>
+        <FontAwesome    name={item.isLiked ? "heart" : "heart-o"}
+              size={18}
+              color={item.isLiked ? "red" : "gray"} // 좋아요 상태에 따라 색상 변경
+        />
+      </TouchableOpacity>
+      <Text style={styles.likes}>{item.likes}</Text>
       </View>
     </View>
   </TouchableOpacity>
@@ -160,7 +192,7 @@ const router = useRouter();
 
       <View style={styles.cardList}>
       <FlatList
-      data={recipes}
+      data={recipeList}
       keyExtractor={(item) => item.id}
       renderItem={renderRecipe}
       contentContainerStyle={styles.list}
